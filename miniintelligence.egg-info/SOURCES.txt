@@ -1,0 +1,7 @@
+README.md
+setup.py
+miniintelligence.egg-info/PKG-INFO
+miniintelligence.egg-info/SOURCES.txt
+miniintelligence.egg-info/dependency_links.txt
+miniintelligence.egg-info/requires.txt
+miniintelligence.egg-info/top_level.txt
