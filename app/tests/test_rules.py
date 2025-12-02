@@ -1,7 +1,19 @@
 import pytest
 from app.rules.rules_engine import compute_productivity 
 from app.models.schemas import InputPayload, Task
+from app.api.endpoints.process import router  # Import the router
+from fastapi.testclient import TestClient
+from fastapi import FastAPI
 
+# Create a test client
+app = FastAPI()
+app.include_router(router)
+client = TestClient(app)
+
+# Helper function to call the analyze endpoint
+def analyse(payload: InputPayload):
+    response = client.post("/api/v1/analyze", json=payload.dict())
+    return response.json()
 
 def test_high_productivity():
     """High productivity: many completed tasks + strong deep work."""
