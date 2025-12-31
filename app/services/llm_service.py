@@ -6,7 +6,6 @@ from pydantic import validate_arguments, Field
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_groq import ChatGroq
 from app.config import get_settings
-from app.utils.cache import redis_cache as cache
 from app.models.schemas import LLMOutput, RuleExplanation
 
 logger = logging.getLogger(__name__)
@@ -98,24 +97,15 @@ class LLMHandler:
         explanations: List[RuleExplanation] = Field(..., min_items=1)
     ) -> tuple[LLMOutput, bool]:
         try:
-            explanations_dict = [e.model_dump() for e in explanations]
-            cache_key = f"llm:insight:{score}:{json.dumps(sorted(tags))}:{json.dumps(explanations_dict, sort_keys=True)}"
-
-            cached = await cache.get(cache_key)
-            if cached:
-                logger.debug("Cache hit for productivity insights")
-                return LLMOutput(**cached), True
-
             input_text = (
                 f"Score: {score}/100\n"
                 f"Tags: {', '.join(sorted(tags))}\n"
-                "Explanations:\n" + "\n".join([f"- {e}" for e in explanations_dict])
+                "Explanations:\n" + "\n".join([f"- {e}" for e in explanations])
             )
 
             parsed_response = await self._call_llm(input_text)
             result = LLMOutput(**parsed_response)
 
-            await cache.set(cache_key, result.model_dump(), expire=settings.CACHE_EXPIRE_SECONDS)
             return result, False
 
         except Exception as e:

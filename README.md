@@ -11,7 +11,7 @@ A hybrid AI system that analyzes daily productivity using **deterministic rules*
 
 - **Hybrid Analysis**: Combines rule-based scoring with LLM insights
 - **Structured Output**: Consistent JSON responses with scores, tags, and explanations
-- **Caching Layer**: Redis-based caching for improved performance
+- **Optional Caching**: Redis-based caching layer (disabled by default)
 - **Rate Limiting**: Protect your LLM API from abuse
 - **Container Ready**: Easy deployment with Docker
 
@@ -35,7 +35,7 @@ flowchart TD
 | Backend Framework   | FastAPI (Python)     |
 | LLM Framework       | LangChain            |
 | AI Provider         | Groq (llama-3.3-70b) |
-| Caching             | Redis                |
+| Caching             | Redis (Optional)     |
 | Validation          | Pydantic             |
 | Containerization    | Docker (optional)    |
 
@@ -69,35 +69,41 @@ flowchart TD
 Create a `.env` file with the following variables:
 
 ```ini
-# LLM Configuration
+# Required: LLM Configuration
 LLM_API_KEY=your_groq_api_key
 LLM_MODEL=llama-3.3-70b-versatile
 
-# Redis Configuration
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_DB=0
+# Optional: Redis Configuration (only needed if enabling caching)
+# REDIS_HOST=localhost
+# REDIS_PORT=6379
+# REDIS_DB=0
+# CACHE_EXPIRE_SECONDS=3600
 
 # Application Settings
 DEBUG=True
-CACHE_EXPIRE_SECONDS=3600
 RATE_LIMIT="100/minute"
 ```
 
 ## 🚀 Quick Start
 
-1. **Start the Redis server**
-   ```bash
-   docker run -d -p 6379:6379 redis
-   ```
-
-2. **Run the FastAPI server**
+1. **Run the FastAPI server**
    ```bash
    uvicorn app.main:app --reload
    ```
 
-3. **Access the API documentation**
+### Optional: Enable Caching
+
+If you want to enable Redis caching:
+
+1. **Start Redis server**
+   ```bash
+   docker run -d -p 6379:6379 redis
    ```
+
+2. **Update your `.env` file** with Redis configuration (uncomment and set the Redis variables)
+
+3. **Access the API documentation**
+   ```bash
    http://localhost:8000/docs
    ```
 
@@ -172,6 +178,23 @@ The system uses Groq's LLM to provide natural language insights and recommendati
 - **Recommendations**: Actionable suggestions
 - **Key Points**: Important observations
 
+## 🔄 Caching (Optional)
+
+The system includes an optional Redis-based caching layer that can be enabled for microservices:
+
+```python
+from app.utils.cache import RedisCache, redis_cache
+
+# Basic usage
+await redis_cache.set("key", {"data": "value"})
+cached = await redis_cache.get("key")
+```
+
+### When to use caching:
+- When integrating with other services that make repeated similar requests
+- To reduce load on the LLM API
+- For temporary storage of frequently accessed data
+
 ## 🧪 Testing
 
 Run the test suite:
@@ -196,7 +219,7 @@ For production deployment, consider using:
 - Nginx as a reverse proxy
 - Process manager (PM2, Supervisor, or systemd)
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -208,7 +231,7 @@ For production deployment, consider using:
 ---
 
 <div align="center">
-  Made with ❤️ by Manuel Wise
+  Made by Manuel Wise
 </div>
 Open:
 

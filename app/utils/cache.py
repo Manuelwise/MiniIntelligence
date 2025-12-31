@@ -1,5 +1,3 @@
-# app/utils/cache.py
-
 import json
 import hashlib
 from typing import Any, Optional

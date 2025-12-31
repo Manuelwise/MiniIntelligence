@@ -8,14 +8,14 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     ENVIRONMENT: str = Field(default="development", description="Environment: dev, staging, prod")
 
-    # REDIS CONFIG
-    REDIS_HOST: str = Field(default="localhost", description="Redis host")
-    REDIS_PORT: int = Field(default=6379, description="Redis port")
-    REDIS_DB: int = Field(default=0, description="Redis database index")
-    REDIS_PASSWORD: str | None = Field(default=None, description="Password if Redis is secured")
+    # REDIS CONFIG FOR CACHING
+    # REDIS_HOST: str = Field(default="localhost", description="Redis host")
+    # REDIS_PORT: int = Field(default=6379, description="Redis port")
+    # REDIS_DB: int = Field(default=0, description="Redis database index")
+    # REDIS_PASSWORD: str | None = Field(default=None, description="Password if Redis is secured")
 
     # Cache expiry for LLM responses (seconds)
-    CACHE_EXPIRE_SECONDS: int = Field(default=3600, description="1 hour default LLM cache TTL")
+    # CACHE_EXPIRE_SECONDS: int = Field(default=3600, description="1 hour default LLM cache TTL")
 
     # LLM CONFIG
     LLM_API_KEY: str = Field(..., description="OpenAI or Groq API key")  # required

@@ -48,7 +48,7 @@ async def analyze(payload: InputPayload, request: Request, response: Response):
     )
 
     # Add cache header for debugging / tests
-    response.headers["x-cache"] = "HIT" if from_cache else "MISS"
+    # response.headers["x-cache"] = "HIT" if from_cache else "MISS"
 
     return AnalyseResult(
     score=score,
